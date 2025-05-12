@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/V1_Create_tables.yaml
+  - include:
+      file: db/changelog/V2__Create_audit_logs_table.yaml

@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: <DenisShakhurov>
+      changes:
+        - createSequence:
+            sequenceName: audit_logs_seq
+            startValue: 1
+            incrementBy: 1
+            remarks: Sequence for generating unique audit log identifiers
+        - createTable:
+            tableName: audit_logs
+            schemaName: financial_tracker
+            remarks: Tracks security-relevant system events and user actions for auditing purposes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  remarks: Unique identifier for the audit log entry
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  defaultValueSequenceNext: audit_logs_seq
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  remarks: Reference to the user who performed the action (nullable for system events)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: action
+                  type: VARCHAR(100)
+                  remarks: Description of the action performed (e.g., LOGIN, TRANSACTION_CREATE)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  remarks: Email of the user at the time of the action (captured for historical reference)
+              - column:
+                  name: details
+                  type: TEXT
+                  remarks: Additional context or data about the event in JSON or text format
+              - column:
+                  name: timestamp
+                  type: TIMESTAMP
+                  remarks: Exact date and time when the event occurred
+                  constraints:
+                    nullable: false

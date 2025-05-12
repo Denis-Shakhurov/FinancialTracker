@@ -1,0 +1,180 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: <DenisShakhurov>
+      changes:
+        - createSequence:
+            sequenceName: users_seq
+            startValue: 1
+            incrementBy: 1
+            remarks: Sequence for generating unique user identifiers
+        - createTable:
+            tableName: users
+            schemaName: financial_tracker
+            remarks: Stores user account information
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: Unique identifier for the user
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  defaultValueSequenceNext: users_seq
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  remarks: Name of the user
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(256)
+                  remarks: User's email address, used for authentication
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR(256)
+                  remarks: Hashed password for user authentication
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(30)
+                  remarks: User's role in the system (e.g., ADMIN, USER)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_banned
+                  type: BOOLEAN
+                  remarks: Flag indicating if the user account is banned
+                  constraints:
+                    nullable: false
+        - createSequence:
+            sequenceName: transactions_seq
+            startValue: 1
+            incrementBy: 1
+            remarks: Sequence for generating unique transaction identifiers
+        - createTable:
+            tableName: transactions
+            schemaName: financial_tracker
+            remarks: Records all financial transactions made by users
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: Unique identifier for the transaction
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  defaultValueSequenceNext: transactions_seq
+              - column:
+                  name: user_id
+                  type: INT
+                  remarks: Reference to the user who made the transaction
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_user
+                    references: financial_tracker.users(id)
+              - column:
+                  name: amount
+                  type: DECIMAL(10, 2)
+                  remarks: Monetary amount of the transaction
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category
+                  type: VARCHAR(100)
+                  remarks: Category of the transaction (e.g., Food, Transportation)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  remarks: Additional details about the transaction
+              - column:
+                  name: date
+                  type: TIMESTAMP
+                  remarks: Date and time when the transaction occurred
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_income
+                  type: BOOLEAN
+                  remarks: Flag indicating if this is an income (true) or expense (false)
+        - createSequence:
+            sequenceName: goals_seq
+            startValue: 1
+            incrementBy: 1
+            remarks: Sequence for generating unique financial goal identifiers
+        - createTable:
+            tableName: goals
+            schemaName: financial_tracker
+            remarks: Stores financial goals set by users
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: Unique identifier for the financial goal
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  defaultValueSequenceNext: goals_seq
+              - column:
+                  name: user_id
+                  type: INT
+                  remarks: Reference to the user who set the goal
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_goals_user
+                    references: financial_tracker.users(id)
+              - column:
+                  name: description
+                  type: TEXT
+                  remarks: Description of the financial goal
+              - column:
+                  name: target_amount
+                  type: DECIMAL(10, 2)
+                  remarks: Target amount to be saved or achieved
+                  constraints:
+                    nullable: false
+        - createSequence:
+            sequenceName: spending_limits_seq
+            startValue: 1
+            incrementBy: 1
+            remarks: Sequence for generating unique spending limit identifiers
+        - createTable:
+            tableName: spending_limits
+            schemaName: financial_tracker
+            remarks: Defines spending limits set by users for budgeting
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: Unique identifier for the spending limit
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  defaultValueSequenceNext: spending_limits_seq
+              - column:
+                  name: user_id
+                  type: INT
+                  remarks: Reference to the user who set the limit
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_spending_limits_user
+                    references: financial_tracker.users(id)
+              - column:
+                  name: limit_amount
+                  type: DECIMAL(10, 2)
+                  remarks: Maximum allowed spending amount
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  remarks: Flag indicating if the limit is currently active
+                  constraints:
+                    nullable: false

@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: APP
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: root
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+  aop:
+    auto: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.boot: INFO
+    org.springframework.context: DEBUG
+    org.springframework.aop: DEBUG
+    org.example: DEBUG
